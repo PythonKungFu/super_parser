@@ -98,7 +98,7 @@ class Gifts:
                     size = self.parent.get_size(size.text.strip())
                 else:
                     size = ' '
-                amount = line.find('td', class_='lgnr')
+                amount = line.find('td', class_='itm-ord-wh')
                 if amount is not None:
                     amount_of_sizes[size] = int(amount.find('g-number').text)
                 else:
