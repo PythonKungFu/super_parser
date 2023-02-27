@@ -64,7 +64,7 @@ class Gifts:
         html = BeautifulSoup(r.content, 'html.parser')
         main_good = self.pars_good_main(page)
 
-        item_other_colors_box = html.select('.itm-clrs')
+        item_other_colors_box = html.select('div.itm-dscr-opt div.itm-clrs')
         if item_other_colors_box:
             other_colors = item_other_colors_box[0].select('a')
             for item in other_colors:
@@ -84,9 +84,11 @@ class Gifts:
         try:
             r = requests.get(page)
             html = BeautifulSoup(r.content, 'html.parser')
-            breadcrumbs = html.select('ul', class_='brdc')[0].select('li')[-3:]
-            section = breadcrumbs[0].select('span')[0].text.strip()
-            vendor_code = breadcrumbs[2].select('span')[0].text.split()[1]
+            breadcrumbs = html.select('ul', class_='brdc')[0].select('li')
+            section = ''
+            if len(breadcrumbs) > 2:
+                section = breadcrumbs[0].select('span')[0].text.strip()
+            vendor_code = html.find('meta', itemprop='sku')['content']
             name = html.find('h1', itemprop="name").text
             print(name)
             price = float(html.find('meta', itemprop='price')['content'])
@@ -123,7 +125,6 @@ class Gifts:
                 description = description.text
             else:
                 description = ''
-            # print(page)
             return {'name': name, 'price': [price], 'section': section, 'marks': [mark],
                     'color': [color], 'page': [page], 'materials': materials, 'descriptions': [description],
                     'sizes': [amount_of_sizes], 'vendor_code': [vendor_code]}
